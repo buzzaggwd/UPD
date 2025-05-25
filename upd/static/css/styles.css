@@ -33,7 +33,7 @@ body {
   fieldset {
     border: 2px;
     border-radius: 12px;
-    border-image: linear-gradient(to right, grey 25%, yellow 25%, yellow 50%,red 50%, red 75%, teal 75%) 5;
+    /* border-image: linear-gradient(to right, grey 25%, yellow 25%, yellow 50%,red 50%, red 75%, teal 75%) 5; */
     padding: 16px;
   }
 
