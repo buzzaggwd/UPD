@@ -217,7 +217,7 @@ body {
     text-decoration: underline;
   }
   
-  /* === Tooltip stub (если ты будешь подключать настоящие — можно заменить) === */
+  /* === Tooltip stub === */
   [data-tooltip]:after {
     content: attr(data-tooltip);
     display: none;
