@@ -4,14 +4,14 @@ body {
     font-size: 15px;
     margin: 0;
     padding: 2rem;
-    background-color: #f9f9f9; /* Фон подложки, если картинка прозрачная */
+    background-color: #f9f9f9;
     color: #333;
     /* Новые свойства фона */
-    background-image: url('../img/crumpled-paper.jpeg'); /* Путь к картинке (относительно CSS-файла) */
-    background-size: 100%; /* Растягивает картинку, чтобы она покрыла весь экран */
-    background-position: center; /* Выравнивание картинки по центру */
+    background-image: url('../img/crumpled-paper.jpeg');
+    background-size: 100%;
+    background-position: center; 
     background-repeat: repeat;
-    backdrop-filter: blur(15px); /* Запрещает повторение картинки */
+    backdrop-filter: blur(15px);
 }
   
   h1 {
