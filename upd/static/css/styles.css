@@ -4,9 +4,15 @@ body {
     font-size: 15px;
     margin: 0;
     padding: 2rem;
-    background-color: #f9f9f9;
+    background-color: #f9f9f9; /* Фон подложки, если картинка прозрачная */
     color: #333;
-  }
+    /* Новые свойства фона */
+    background-image: url('../img/crumpled-paper.jpeg'); /* Путь к картинке (относительно CSS-файла) */
+    background-size: 100%; /* Растягивает картинку, чтобы она покрыла весь экран */
+    background-position: center; /* Выравнивание картинки по центру */
+    background-repeat: repeat;
+    backdrop-filter: blur(15px); /* Запрещает повторение картинки */
+}
   
   h1 {
     font-size: 24px;
@@ -22,7 +28,7 @@ body {
   
   /* === Блоки === */
   .section {
-    background: #e5e5e5;
+    background: #eaeaeaee;
     border: 1px solid #ddd;
     border-radius: 12px;
     padding: 20px;
@@ -44,7 +50,7 @@ body {
     padding: 0 8px;
   }
   
-  /* === Кнопка печати === */
+  /* === Кнопки === */
   button {
     padding: 8px 16px;
     background-color: #007bff;
@@ -56,10 +62,22 @@ body {
     transition: background-color 0.2s ease;
   }
   
+  .save_button {
+    background-color: #28a745;
+  }
+
   button:hover {
     background-color: #0056b3;
   }
   
+  .button_trio {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    justify-content: space-between;
+    align-items: center;
+  }
+
   /* === Формы и поля === */
   form {
     margin: 0;
@@ -184,6 +202,10 @@ body {
     margin-top: 12px;
   }
   
+  .pdf_choice {
+    width: fit-content;
+  }
+
   /* === Ссылки в таблицах === */
   a {
     color: #000000;

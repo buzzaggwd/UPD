@@ -1,11 +1,12 @@
 from django.contrib import messages
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from . import forms
+import json
+from datetime import date
 
 
 def index(request):
-    json_data = None
-
     invoice_form = forms.InvoiceForm(request.POST or None)
     advance_payment_form = forms.AdvancePaymentForm(request.POST or None)
     documents_form = forms.DocumentsForm(request.POST or None)
@@ -49,37 +50,66 @@ def index(request):
                     errors.append(f"Ошибка в форме {form_name}: {form.errors}")
             
             if all_valid:
-                # # Сохраняем формы без внешних ключей (commit=False)
-                # shipper_instance = shipper_form.save(commit=False)
-                # consignee_instance = consignee_form.save(commit=False)
-                # product_instance = product_form.save(commit=False)
+                seller_instance = seller_form.save()
+                shipper_instance = shipper_form.save(commit=False)
+                shipper_instance.sellerbuyer_id = seller_instance
+                shipper_instance.save()
+
+                buyer_instance = buyer_form.save()
+                consignee_instance = consignee_form.save(commit=False)
+                consignee_instance.sellerbuyer_id = buyer_instance
+                consignee_instance.save()
                 
-                # # Устанавливаем внешние ключи (пример: sellerbuyer берется из seller_form)
-                # seller_instance = seller_form.save()  # Предполагается, что seller_form валиден
-                # shipper_instance.sellerbuyer_id = seller_instance
-                # consignee_instance.sellerbuyer_id = seller_instance
+                section_instance = section_form.save()
+                product_instance = product_form.save(commit=False)
+                product_instance.section_id = section_instance
+                product_instance.save()
                 
-                # # Устанавливаем section_id (пример: section берется из section_form)
-                # # В блоке if action == 'save':
-                # section_instance = section_form.save()  # Сохраняем раздел
-                # product_instance = product_form.save(commit=False)
-                # product_instance.section_id = section_instance  # Устанавливаем внешний ключ
-                # product_instance.save()  # Теперь сохраняем продукт
-                
-                # # Теперь сохраняем полные экземпляры
-                # shipper_instance.save()
-                # consignee_instance.save()
-                # product_instance.save()
-                
-                # Сохраняем остальные формы
                 for form in forms_dict.values():
-                    if form not in [shipper_form, consignee_form, product_form]:
+                    if form not in [shipper_form, consignee_form, product_form, seller_form, section_form]:
                         form.save()
                 messages.success(request, "Данные успешно сохранены!")
-                return redirect('index')
+                #return redirect('index')
+
+                cleaned_data_dict = {form_name: form.cleaned_data for form_name, form in forms_dict.items()}
+                def date_encoder(obj):
+                    if isinstance(obj, date):
+                        return obj.isoformat()
+                    return obj
+                return HttpResponse(json.dumps(cleaned_data_dict, default=date_encoder), content_type='application/json')
+                
             else:
                 messages.error(request, "Ошибки валидации:\n" + "\n".join(errors))
-                return render(request, "index.html", forms_dict)
+                # return render(request, "index.html", forms_dict)
 
     return render(request, "index.html", forms_dict)
 
+
+def create_shipper(request):
+    if request.method == 'POST':
+        seller_form = SellerForm(request.POST)
+        if seller_form.is_valid():
+            seller = seller_form.save()
+            shipper_form = ShipperForm(request.POST)
+            if shipper_form.is_valid():
+                shipper = shipper_form.save(sellerbuyer_id=seller.id)
+                return redirect('success_page')
+    else:
+        seller_form = SellerForm()
+        shipper_form = ShipperForm()
+    return render(request, 'create_shipper.html', {'seller_form': seller_form, 'shipper_form': shipper_form})
+
+
+def create_consignee(request):
+    if request.method == 'POST':
+        buyer_form = BuyerForm(request.POST)
+        if buyer_form.is_valid():
+            buyer = buyer_form.save()
+            consignee_form = ConsigneeForm(request.POST)
+            if consignee_form.is_valid():
+                consignee = consignee_form.save(sellerbuyer_id=buyer.id)
+                return redirect('success_page')
+    else:
+        buyer_form = BuyerForm()
+        consignee_form = BuyerForm()
+    return render(request, 'create_consignee.html', {'buyer_form': buyer_form, 'consignee_form': consignee_form})

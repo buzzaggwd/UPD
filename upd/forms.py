@@ -105,8 +105,7 @@ class ShipperForm(forms.ModelForm):
     class Meta:
         model = models.Shipping
         fields = "__all__"
-        exclude = ["sellerbuyer_id"]
-        exclude = ["shipping_type"]
+        exclude = ["shipping_type", "sellerbuyer_id"]
         labels = {
             "relation_type": "",
             "name": "Наименование:",
@@ -126,9 +125,11 @@ class ShipperForm(forms.ModelForm):
             ),
         }
 
-    def save(self, commit=True):
+    def save(self, commit=True, sellerbuyer_id=None):
         instance = super().save(commit=False)
         instance.shipping_type = "shipper"
+        if sellerbuyer_id:
+            instance.sellerbuyer_id = models.SellerBuyer.objects.get(id=sellerbuyer_id)
         if commit:
             instance.save()
         return instance
@@ -138,8 +139,7 @@ class ConsigneeForm(forms.ModelForm):
     class Meta:
         model = models.Shipping
         fields = "__all__"
-        exclude = ["sellerbuyer_id"]
-        exclude = ["shipping_type"]
+        exclude = ["shipping_type", "sellerbuyer_id"]
         labels = {
             "relation_type": "",
             "name": "Наименование:",
@@ -159,9 +159,11 @@ class ConsigneeForm(forms.ModelForm):
             ),
         }
 
-    def save(self, commit=True):
+    def save(self, commit=True, sellerbuyer_id=None):
         instance = super().save(commit=False)
         instance.shipping_type = "consignee"
+        if sellerbuyer_id:
+            instance.sellerbuyer_id = models.SellerBuyer.objects.get(id=sellerbuyer_id)
         if commit:
             instance.save()
         return instance

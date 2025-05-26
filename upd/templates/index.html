@@ -29,14 +29,14 @@
                 {{ invoice_form.invoice_number.label_tag }} {{ invoice_form.invoice_number }}
                 &nbsp;{{ invoice_form.date.label_tag }} {{ invoice_form.date }}
               </div>
-              <div class="col-auto">
+              <!-- <div class="col-auto">
                 <button
                   type="submit"
                   name="action"
                   value="print">
                   Печать
                 </button>
-              </div>
+              </div> -->
             </div>
             <div class="invoice_inner2">
               <legend>Исправления</legend>
@@ -351,33 +351,38 @@
             <br>
             {{ output_settings_form.show_signature }} {{ output_settings_form.show_signature.label }}
             <br>
-            <div class="col-auto">
-              <button
-                type="submit"
-                name="action"
-                value="save"
-              >
-                Сохранить
-              </button>
-            </div>
-            {{ output_settings_form.file_format }}
-            <div class="col-auto">
-              <button
-                type="submit"
-                name="action"
-                value="print"
-              >
-                Печать
-              </button>
-            </div>
-            <div class="col-auto">
-              <button
-                type="submit"
-                name="action"
-                value="download"
-              >
-                Скачать
-              </button>
+            <div class="button_trio">
+              <div class="col-auto">
+                <button
+                  type="submit"
+                  name="action"
+                  value="save"
+                  class="save_button"
+                >
+                  Сохранить
+                </button>
+              </div>
+              <div class="pdf_choice">
+              {{ output_settings_form.file_format }}
+              </div>
+              <!-- <div class="col-auto">
+                <button
+                  type="submit"
+                  name="action"
+                  value="print"
+                >
+                  Печать
+                </button>
+              </div> -->
+              <!-- <div class="col-auto">
+                <button
+                  type="submit"
+                  name="action"
+                  value="download"
+                >
+                  Скачать
+                </button>
+              </div> -->
             </div>
           </fieldset>
 
