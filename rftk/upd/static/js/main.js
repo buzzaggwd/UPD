@@ -18,34 +18,40 @@
 // });
 
 document.addEventListener("DOMContentLoaded", function () {
-  function copySellerToShipper() {
-    const sellerFields = ["name", "inn", "kpp", "address", "manager_fio"];
-    sellerFields.forEach((field) => {
-      const sellerValue = document.querySelector(
-        `[name="seller-${field}"]`
-      ).value;
-      document.querySelector(`[name="shipper-${field}"]`).value = sellerValue;
-    });
-  }
-
-  function copyBuyerToConsignee() {
-    const buyerFields = ["name", "inn", "kpp", "address", "manager_fio"];
-    buyerFields.forEach((field) => {
-      const buyerValue = document.querySelector(
-        `[name="buyer-${field}"]`
-      ).value;
-      document.querySelector(`[name="consignee-${field}"]`).value = buyerValue;
-    });
-  }
-
-  document.querySelectorAll('input[type="radio"]').forEach(radio => {
-        radio.addEventListener("change", function() {
-            if (this.name === "shipper-relation_type" && this.value === "Он же") {
-                copySellerToShipper();
-            }
-            if (this.name === "consignee-relation_type" && this.value === "Он же") {
-                copyBuyerToConsignee();
+    function copyFields(fromPrefix, toPrefix, fields) {
+        fields.forEach(field => {
+            const fromInput = document.querySelector(`input[name="${fromPrefix}-${field}"]`);
+            const toInput = document.querySelector(`input[name="${toPrefix}-${field}"]`);
+            if (fromInput && toInput) {
+                toInput.value = fromInput.value;
             }
         });
-    });
+    }
+
+    function clearFields(prefix, fields) {
+        fields.forEach(field => {
+            const input = document.querySelector(`input[name="${prefix}-${field}"]`);
+            if (input) {
+                input.value = "";
+            }
+        });
+    }
+
+    function handleRelationRadios(radioName, fromPrefix, toPrefix, fields) {
+        const radios = document.querySelectorAll(`input[name="${radioName}"]`);
+        radios.forEach(radio => {
+            radio.addEventListener("change", function () {
+                if (this.value === "Он же") {
+                    copyFields(fromPrefix, toPrefix, fields);
+                } else {
+                    clearFields(toPrefix, fields);
+                }
+            });
+        });
+    }
+
+    handleRelationRadios("shipper-relation_type", "seller", "shipper", ["name", "inn", "kpp", "address", "manager_fio"]);
+    handleRelationRadios("consignee-relation_type", "buyer", "consignee", ["name", "inn", "kpp", "address", "manager_fio"]);
 });
+
+

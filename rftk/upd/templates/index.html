@@ -27,7 +27,7 @@
           <fieldset class="invoice">
             <div class="invoice_inner1">
               <div class="mt1">
-                {{ invoice_form.number.label_tag }} {{ invoice_form.number }}
+                {{ invoice_form.invoice_number.label_tag }} {{ invoice_form.invoice_number }}
                 &nbsp;{{ invoice_form.date.label_tag }} {{ invoice_form.date }}
               </div>
               <div class="col-auto">
@@ -127,7 +127,7 @@
       <div class="section">
           <fieldset class="consignee">
             <legend>Грузополучатель</legend>
-            <div class="radiobut">{{ consignee_form.relation_type2 }}</div>
+            <div class="radiobut">{{ consignee_form.relation_type }}</div>
             <table>
               <tbody>
                 <tr><td>{{ consignee_form.name.label_tag }}</td> <td>{{ consignee_form.name }}</td></tr>
