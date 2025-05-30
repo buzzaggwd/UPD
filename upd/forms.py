@@ -33,23 +33,32 @@ class AdvancePaymentForm(forms.ModelForm):
         }
 
 
-class DocumentsForm(forms.ModelForm):
+class PaymentDocumentForm(forms.ModelForm):
     class Meta:
-        model = models.Documents
+        model = models.PaymentDocument
+        fields = "__all__"
+        labels = {
+            "number": "№ документа",
+            "date": "Дата",
+        }
+
+
+class ShippingDocumentForm(forms.ModelForm):
+    class Meta:
+        model = models.ShippingDocument
         fields = "__all__"
         labels = {
             "name": "Наименование документа",
             "number": "№ документа",
             "date": "Дата",
-            # type не передаем
         }
 
 
 class SellerForm(forms.ModelForm):
     class Meta:
-        model = models.SellerBuyer
+        model = models.Seller
         fields = "__all__"
-        exclude = ["type"]
+        # exclude = ["type"]
         labels = {
             # type не передаем
             "status": "Статус:",
@@ -71,19 +80,19 @@ class SellerForm(forms.ModelForm):
             )
         }
 
-    def save(self, commit=True):
-        instance = super().save(commit=False)
-        instance.type = "seller"
-        if commit:
-            instance.save()
-        return instance
+    # def save(self, commit=True):
+    #     instance = super().save(commit=False)
+    #     instance.type = "seller"
+    #     if commit:
+    #         instance.save()
+    #     return instance
 
 
 class BuyerForm(forms.ModelForm):
     class Meta:
-        model = models.SellerBuyer
+        model = models.Buyer
         fields = "__all__"
-        exclude = ["type"]
+        # exclude = ["type"]
         labels = {
             "name": "Наименование:",
             "inn": "ИНН:",
@@ -93,19 +102,19 @@ class BuyerForm(forms.ModelForm):
             "manager_fio": "Ф.И.О. Руководителя:",
         }
 
-    def save(self, commit=True):
-        instance = super().save(commit=False)
-        instance.type = "buyer"
-        if commit:
-            instance.save()
-        return instance
+    # def save(self, commit=True):
+    #     instance = super().save(commit=False)
+    #     instance.type = "buyer"
+    #     if commit:
+    #         instance.save()
+    #     return instance
 
 
 class ShipperForm(forms.ModelForm):
     class Meta:
-        model = models.Shipping
+        model = models.Shipper
         fields = "__all__"
-        exclude = ["shipping_type", "sellerbuyer_id"]
+        exclude = ["seller_id"]
         labels = {
             "relation_type": "",
             "name": "Наименование:",
@@ -125,21 +134,21 @@ class ShipperForm(forms.ModelForm):
             ),
         }
 
-    def save(self, commit=True, sellerbuyer_id=None):
-        instance = super().save(commit=False)
-        instance.shipping_type = "shipper"
-        if sellerbuyer_id:
-            instance.sellerbuyer_id = models.SellerBuyer.objects.get(id=sellerbuyer_id)
-        if commit:
-            instance.save()
-        return instance
+    # def save(self, commit=True, seller_id=None):
+    #     instance = super().save(commit=False)
+    #     # instance.shipping_type = "shipper"
+    #     if seller_id:
+    #         instance.seller_id = models.Seller.objects.get(id=seller_id)
+    #     if commit:
+    #         instance.save()
+    #     return instance
 
 
 class ConsigneeForm(forms.ModelForm):
     class Meta:
-        model = models.Shipping
+        model = models.Consignee
         fields = "__all__"
-        exclude = ["shipping_type", "sellerbuyer_id"]
+        exclude = ["buyer_id"]
         labels = {
             "relation_type": "",
             "name": "Наименование:",
@@ -159,14 +168,14 @@ class ConsigneeForm(forms.ModelForm):
             ),
         }
 
-    def save(self, commit=True, sellerbuyer_id=None):
-        instance = super().save(commit=False)
-        instance.shipping_type = "consignee"
-        if sellerbuyer_id:
-            instance.sellerbuyer_id = models.SellerBuyer.objects.get(id=sellerbuyer_id)
-        if commit:
-            instance.save()
-        return instance
+    # def save(self, commit=True, buyer_id=None):
+    #     instance = super().save(commit=False)
+    #     instance.shipping_type = "consignee"
+    #     if buyer_id:
+    #         instance.buyer_id = models.Buyer.objects.get(id=buyer_id)
+    #     if commit:
+    #         instance.save()
+    #     return instance
 
 
 class AdditionalInfoForm(forms.ModelForm):
@@ -248,7 +257,7 @@ class ProductForm(forms.ModelForm):
     class Meta:
         model = models.Product
         fields = "__all__"
-        exclude = ["section_id"]
+        # exclude = ["section_id"]
         labels = {
             "section_id": "Раздел:",
             "name": "Наименование:",
@@ -266,6 +275,10 @@ class ProductForm(forms.ModelForm):
             "price": "Цена:",
         }
 
+        # widgets = {
+        #     'section': forms.HiddenInput()
+        # }
+
 
 class InfoBlockForm(forms.ModelForm):
     class Meta:
@@ -277,9 +290,9 @@ class InfoBlockForm(forms.ModelForm):
         }
 
 
-class TransferDetailsForm(forms.ModelForm):
+class TransferedForm(forms.ModelForm):
     class Meta:
-        model = models.TransferDetails
+        model = models.Transfered
         fields = "__all__"
         labels = {
             # type не передаем
@@ -297,27 +310,60 @@ class TransferDetailsForm(forms.ModelForm):
         }
 
 
-class DocumentCreatorForm(forms.ModelForm):
+class ReceivedForm(forms.ModelForm):
     class Meta:
-        model = models.DocumentCreator
+        model = models.Received
+        fields = "__all__"
+        labels = {
+            # type не передаем
+            "position": "Должность:",
+            "name": "Ф.И.О:",
+            "date": "",  # Дата отгрузки (передачи): Дата получения (приемки):
+            "other": "Иные сведения об отгрузке, передаче:",  # Иные сведения о получении, приемке:
+            "resp_position": "Должность:",
+            "resp_name": "Ф.И.О:",
+        }
+
+        widgets = {
+            "is_signed": forms.CheckboxInput(),
+        }
+
+
+class DocumentSellerForm(forms.ModelForm):
+    class Meta:
+        model = models.DocumentSeller
         fields = "__all__"
         labels = {
             "name": "Наименование:",
             "inn": "ИНН:",
             "kpp": "КПП:",
-            "type1": "",
-            "type2": "",
+            "type": "",
         }
 
         widgets = {
-            "type1": forms.RadioSelect(
+            "type": forms.RadioSelect(
                 choices=[
                     ("Не указывать", "Не указывать"),
                     ("Продавец", "Продавец"),
                     ("Иное", "Иное"),
                 ]
             ),
-            "type2": forms.RadioSelect(
+        }
+
+
+class DocumentBuyerForm(forms.ModelForm):
+    class Meta:
+        model = models.DocumentBuyer
+        fields = "__all__"
+        labels = {
+            "name": "Наименование:",
+            "inn": "ИНН:",
+            "kpp": "КПП:",
+            "type": "",
+        }
+
+        widgets = {
+            "type": forms.RadioSelect(
                 choices=[
                     ("Не указывать", "Не указывать"),
                     ("Покупатель", "Покупатель"),

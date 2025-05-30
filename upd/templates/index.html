@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Универсальный передаточный документ</title>
     <link rel="stylesheet" href="/static/css/styles.css" />
+    <script src="/static/js/main.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   </head>
 
   <body>
@@ -38,16 +40,14 @@
                 </button>
               </div> -->
             </div>
-            <div class="invoice_inner2">
+            <fieldset class="invoice_inner2">
               <legend>Исправления</legend>
               <div class="radiobut">{{ invoice_form.is_adjusted }}</div>
-            </div>
-            <div class="invoice_inner3">
               <div class="mt1">
                 {{ invoice_form.adjusted_number.label_tag }} {{ invoice_form.adjusted_number }} 
                 &nbsp;{{invoice_form.adjusted_date.label_tag }} {{ invoice_form.adjusted_date }}
               </div>
-            </div>
+            </fieldset>
           </fieldset>
       </div>
 
@@ -63,19 +63,8 @@
       <div class="section">
         <fieldset class="documents">
           <legend>К платежно-расчетному документу</legend>
-          <table>
-            <thead>
-              <tr>
-                <th>{{ documents_form.number.label_tag }}</th>
-                <th>{{ documents_form.date.label_tag }}</th>
-            </thead>
-            <tbody>
-              <tr>
-                <td>{{ documents_form.number }}</td>
-                <td>{{ documents_form.date }}</td>
-              </tr>
-            </tbody>
-          </table>
+          {{ payment_document_form.number.label_tag }} {{ payment_document_form.number }} 
+          &nbsp;{{ payment_document_form.date.label_tag }} {{ payment_document_form.date }}
         </fieldset>
       </div>
 
@@ -156,21 +145,9 @@
       <div class="section">
           <fieldset class="documents">
             <legend>Документ об отгрузке</legend>
-            <table>
-              <thead>
-                <tr>
-                  <th>{{ documents_form.name.label_tag }}</th>
-                  <th>{{ documents_form.number.label_tag }}</th>
-                  <th>{{ documents_form.date.label_tag }}</th>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>{{ documents_form.name }}</td>
-                  <td>{{ documents_form.number }}</td>
-                  <td>{{ documents_form.date }}</td>
-                </tr>
-              </tbody>
-            </table>
+            {{ shipping_document_form.name.label_tag }} {{ shipping_document_form.name }}
+            &nbsp;{{ shipping_document_form.number.label_tag }} {{ shipping_document_form.number }} 
+            &nbsp;{{ shipping_document_form.date.label_tag }} {{ shipping_document_form.date }}
           </fieldset>
       </div>
 
@@ -193,9 +170,31 @@
 
       <!-- Блок 10: Продукт/товар -->
       <div class="section">
+          <!-- Модальное окно -->
+          <div class="modal fade" id="sectionModal" tabindex="-1" aria-labelledby="sectionModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <form id="section-form" method="post">
+                {% csrf_token %}
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="sectionModalLabel">Новый раздел</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                  </div>
+                  <div class="modal-body">
+                    {{ section_form.name.label_tag }} {{ section_form.name }}
+                  </div>
+                  <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Сохранить</button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+
           <fieldset class="sections">
             <legend>Раздел продукта/товара</legend>
-            {{ section_form.name.label_tag }} {{ section_form.name}}
+            <!-- {{ section_form.name.label_tag }} {{ section_form.name}} -->
+            <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#sectionModal">Создать раздел</button>
           </fieldset>
 
           <fieldset class="product">
@@ -203,24 +202,25 @@
             <table class="product_table">
               <thead>
                 <tr>
-                  <th rowspan="2">Раздел</th>
-                  <th rowspan="2">Код товара/работ, услуг</th>
-                  <th rowspan="2">Наименование</th>
-                  <th rowspan="2">Код вида товара</th>
-                  <th colspan="2">Единица изм.</th>
-                  <th rowspan="2">Акциз</th>
-                  <th rowspan="2">Кол-во</th>
-                  <th rowspan="2">Цена</th>
-                  <th rowspan="2">Сумма</th>
-                  <th rowspan="2">Ставка, %</th>
-                  <th colspan="2">Страна</th>
-                  <th rowspan="2">№ ГТД <span data-tooltip="Регистрационный номер декларации на товары или регистрационный номер партии товара, подлежащего прослеживаемости"></span></th>
+                  <th>Раздел</th>
+                  <th>Код товара/работ, услуг</th>
+                  <th>Наименование</th>
+                  <th>Код вида товара</th>
+                  <th>Единица изм.</th>
+                  <th>Акциз</th>
+                  <th>Кол-во</th>
+                  <th>Цена</th>
+                  <th>Сумма</th>
+                  <th>Страна</th>
+                  <th>№ ГТД <span data-tooltip="Регистрационный номер декларации на товары или регистрационный номер партии товара, подлежащего прослеживаемости"></span></th>
+                  <th>&nbsp;</th>
                 </tr>
                 <tr>
                   <th>код</th>
                   <th>усл. обозн.</th>
                   <th>код</th>
                   <th>кратк. наим.</th>
+                  <th>регион</th>
                 </tr>
               </thead>
               <tbody>
@@ -237,6 +237,7 @@
                   <td>{{ product_form.full_sum }}</td>
                   <td>{{ product_form.country_code }}</td>
                   <td>{{ product_form.country_name }}</td>
+                  <td>{{ product_form.customs_declaration_num }}</td>
                 </tr>
               </tbody>
               <tfoot>
@@ -247,7 +248,7 @@
                     <span>10 строк</span>
                   </td>
                   <td><b>Сумма НДС:</b></td>
-                  <td>{{ product_form.customs_declaration_num }}</td>
+                  <td>0.00</td>
                   <td><strong>Итого</strong></td>
                   <td>0.00</td>
                 </tr>
@@ -272,18 +273,18 @@
             <legend>Товар передал / услуги, результаты работ, права сдал</legend>
             <table>
               <tbody>
-                <tr><td>{{ transfer_details_form.position.label_tag }}</td> <td>{{ transfer_details_form.position }}</td></tr>
-                <tr><td>{{ transfer_details_form.name.label_tag }}</td> <td>{{ transfer_details_form.name }}</td></tr>
-                <tr><td>Дата отгрузки (передачи):</td> <td>{{ transfer_details_form.date }}</td>
-                <td><label>{{ transfer_details_form.is_signed }} {{ transfer_details_form.is_signed.label_tag }}</label></td></tr>
-                <tr><td>{{ transfer_details_form.other.label_tag }} <br> {{ transfer_details_form.other }}</td></tr>
+                <tr><td>{{ transfered_form.position.label_tag }}</td> <td>{{ transfered_form.position }}</td></tr>
+                <tr><td>{{ transfered_form.name.label_tag }}</td> <td>{{ transfered_form.name }}</td></tr>
+                <tr><td>Дата отгрузки (передачи):</td> <td>{{ transfered_form.date }}</td>
+                <td><label>{{ transfered_form.is_signed }} {{ transfered_form.is_signed.label_tag }}</label></td></tr>
+                <tr><td>{{ transfered_form.other.label_tag }} <br> {{ transfered_form.other }}</td></tr>
               </tbody>
             </table>
             <legend>Ответственный за правильность оформления факта хозяйственной жизни</legend>
             <table>
               <tbody>
-                <tr><td>{{ transfer_details_form.resp_position.label_tag }}</td> <td>{{ transfer_details_form.resp_position }}</td></tr>
-                <tr><td>{{ transfer_details_form.resp_name.label_tag }}</td> <td>{{ transfer_details_form.resp_name }}</td></tr>
+                <tr><td>{{ transfered_form.resp_position.label_tag }}</td> <td>{{ transfered_form.resp_position }}</td></tr>
+                <tr><td>{{ transfered_form.resp_name.label_tag }}</td> <td>{{ transfered_form.resp_name }}</td></tr>
               </tbody>
             </table>
           </fieldset>
@@ -295,17 +296,17 @@
             <legend>Товар (груз) получил / услуги, результаты работ, права принял</legend>
             <table>
               <tbody>
-                <tr><td>{{ transfer_details_form.position.label_tag }}</td> <td>{{ transfer_details_form.position }}</td></tr>
-                <tr><td>{{ transfer_details_form.name.label_tag }}</td> <td>{{ transfer_details_form.name }}</td></tr>
-                <tr><td>Дата отгрузки (передачи):</td> <td>{{ transfer_details_form.date }}</td></tr>
-                <tr><td>{{ transfer_details_form.other.label_tag }} <br> {{ transfer_details_form.other }}</td></tr>
+                <tr><td>{{ received_form.position.label_tag }}</td> <td>{{ received_form.position }}</td></tr>
+                <tr><td>{{ received_form.name.label_tag }}</td> <td>{{ received_form.name }}</td></tr>
+                <tr><td>Дата отгрузки (передачи):</td> <td>{{ received_form.date }}</td></tr>
+                <tr><td>{{ received_form.other.label_tag }} <br> {{ received_form.other }}</td></tr>
               </tbody>
              </table>
              <legend>Ответственный за правильность оформления факта хозяйственной жизни</legend>
              <table>
               <tbody>
-                <tr><td>{{ transfer_details_form.resp_position.label_tag }}</td> <td>{{ transfer_details_form.resp_position }}</td></tr>
-                <tr><td>{{ transfer_details_form.resp_name.label_tag }}</td> <td>{{ transfer_details_form.resp_name }}</td></tr>
+                <tr><td>{{ received_form.resp_position.label_tag }}</td> <td>{{ received_form.resp_position }}</td></tr>
+                <tr><td>{{ received_form.resp_name.label_tag }}</td> <td>{{ received_form.resp_name }}</td></tr>
               </tbody>
              </table>
           </fieldset>
@@ -315,12 +316,12 @@
       <div class="section">
           <fieldset class="document_creator">
             <legend>Наименование экономического субъекта – составителя документа (в т. ч. комиссионера / агента)</legend>
-            <div class="radiobut">{{ document_creator_form.type1 }}</div>
+            <div class="radiobut">{{ document_seller_form.type }}</div>
             <table>
               <tbody>
-                <tr><td>{{ document_creator_form.name.label_tag }}</td> <td>{{ document_creator_form.name }}</td></tr>
-                <tr><td>{{ document_creator_form.inn.label_tag }}</td> <td>{{ document_creator_form.inn }}</td></tr>
-                <tr><td>{{ document_creator_form.kpp.label_tag }}</td> <td>{{ document_creator_form.kpp }}</td></tr>
+                <tr><td>{{ document_seller_form.name.label_tag }}</td> <td>{{ document_seller_form.name }}</td></tr>
+                <tr><td>{{ document_seller_form.inn.label_tag }}</td> <td>{{ document_seller_form.inn }}</td></tr>
+                <tr><td>{{ document_seller_form.kpp.label_tag }}</td> <td>{{ document_seller_form.kpp }}</td></tr>
               </tbody>
             </table>
           </fieldset>
@@ -332,12 +333,12 @@
             <legend>
               Наименование экономического субъекта – составителя документа
             </legend>
-            <div class="radiobut">{{ document_creator_form.type2 }}</div>
+            <div class="radiobut">{{ document_buyer_form.type }}</div>
             <table>
               <tbody>
-                <tr><td>{{ document_creator_form.name.label_tag }}</td> <td>{{ document_creator_form.name }}</td></tr>
-                <tr><td>{{ document_creator_form.inn.label_tag }}</td> <td>{{ document_creator_form.inn }}</td></tr>
-                <tr><td>{{ document_creator_form.kpp.label_tag }}</td> <td>{{ document_creator_form.kpp }}</td></tr>
+                <tr><td>{{ document_buyer_form.name.label_tag }}</td> <td>{{ document_buyer_form.name }}</td></tr>
+                <tr><td>{{ document_buyer_form.inn.label_tag }}</td> <td>{{ document_buyer_form.inn }}</td></tr>
+                <tr><td>{{ document_buyer_form.kpp.label_tag }}</td> <td>{{ document_buyer_form.kpp }}</td></tr>
               </tbody>
             </table>
           </fieldset>
@@ -351,39 +352,34 @@
             <br>
             {{ output_settings_form.show_signature }} {{ output_settings_form.show_signature.label }}
             <br>
-            <div class="button_trio">
-              <div class="col-auto">
-                <button
-                  type="submit"
-                  name="action"
-                  value="save"
-                  class="save_button"
-                >
-                  Сохранить
-                </button>
-              </div>
-              <div class="pdf_choice">
-              {{ output_settings_form.file_format }}
-              </div>
-              <!-- <div class="col-auto">
-                <button
-                  type="submit"
-                  name="action"
-                  value="print"
-                >
-                  Печать
-                </button>
-              </div> -->
-              <!-- <div class="col-auto">
-                <button
-                  type="submit"
-                  name="action"
-                  value="download"
-                >
-                  Скачать
-                </button>
-              </div> -->
+            <div class="col-auto">
+              <button
+                type="submit"
+                name="action"
+                value="save"
+              >
+                Сохранить
+              </button>
             </div>
+            {{ output_settings_form.file_format }}
+            <!-- <div class="col-auto">
+              <button
+                type="submit"
+                name="action"
+                value="print"
+              >
+                Печать
+              </button>
+            </div> -->
+            <!-- <div class="col-auto">
+              <button
+                type="submit"
+                name="action"
+                value="download"
+              >
+                Скачать
+              </button>
+            </div> -->
           </fieldset>
 
           {% if messages %}
@@ -398,6 +394,7 @@
 
       </form>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   </body>
 
 </html>

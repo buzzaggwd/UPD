@@ -22,18 +22,42 @@ class AdvancePayment(models.Model):
         return self.name
 
 
-class Documents(models.Model):
-    name = models.CharField(blank=True)
+class PaymentDocument(models.Model):
     number = models.CharField(blank=True)
     date = models.DateField(default=now, blank=True, null=True)
-    type = models.CharField(blank=True)
 
     def __str__(self):
         return self.name
 
 
-class SellerBuyer(models.Model):
-    type = models.CharField(blank=True)
+class ShippingDocument(models.Model):
+    name = models.CharField(blank=True)
+    number = models.CharField(blank=True)
+    date = models.DateField(default=now, blank=True, null=True)
+
+    def __str__(self):
+        return self.name
+
+
+# class SellerBuyer(models.Model):
+#     type = models.CharField(blank=True)
+#     status = models.CharField(blank=True)
+#     name = models.CharField(blank=True)
+#     full_name = models.CharField(blank=True)
+#     inn = models.CharField(blank=True)
+#     kpp = models.CharField(blank=True)
+#     reg_address = models.CharField(blank=True)
+#     address = models.CharField(blank=True)
+#     requisite = models.CharField(blank=True)
+#     manager = models.CharField(blank=True)
+#     manager_fio = models.CharField(blank=True)
+#     accountant_fio = models.CharField(blank=True)
+
+#     def __str__(self):
+#         return self.name
+
+
+class Seller(models.Model):
     status = models.CharField(blank=True)
     name = models.CharField(blank=True)
     full_name = models.CharField(blank=True)
@@ -50,15 +74,39 @@ class SellerBuyer(models.Model):
         return self.name
 
 
-class Shipping(models.Model):
-    shipping_type = models.CharField(blank=True)
+class Buyer(models.Model):
+    name = models.CharField(blank=True)
+    inn = models.CharField(blank=True)
+    kpp = models.CharField(blank=True)
+    address = models.CharField(blank=True)
+    manager = models.CharField(blank=True)
+    manager_fio = models.CharField(blank=True)
+
+    def __str__(self):
+        return self.name
+
+
+class Shipper(models.Model):
     relation_type = models.CharField(blank=True)
     name = models.CharField(blank=True)
     inn = models.CharField(blank=True)
     kpp = models.CharField(blank=True)
     address = models.CharField(blank=True)
     manager_fio = models.CharField(blank=True)
-    sellerbuyer_id = models.ForeignKey(SellerBuyer, on_delete=models.CASCADE)
+    seller_id = models.ForeignKey(Seller, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name
+
+
+class Consignee(models.Model):
+    relation_type = models.CharField(blank=True)
+    name = models.CharField(blank=True)
+    inn = models.CharField(blank=True)
+    kpp = models.CharField(blank=True)
+    address = models.CharField(blank=True)
+    manager_fio = models.CharField(blank=True)
+    buyer_id = models.ForeignKey(Buyer, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
@@ -111,8 +159,7 @@ class InfoBlock(models.Model):
         return self.name
 
 
-class TransferDetails(models.Model):
-    type = models.CharField(blank=True)
+class Transfered(models.Model):
     position = models.CharField(blank=True)
     name = models.CharField(blank=True)
     date = models.DateField(default=now, blank=True, null=True)
@@ -125,13 +172,33 @@ class TransferDetails(models.Model):
         return self.name
 
 
-class DocumentCreator(models.Model):
+class Received(models.Model):
+    position = models.CharField(blank=True)
+    name = models.CharField(blank=True)
+    date = models.DateField(default=now, blank=True, null=True)
+    other = models.CharField(blank=True)
+    resp_position = models.CharField(blank=True)
+    resp_name = models.CharField(blank=True)
+
+    def __str__(self):
+        return self.name
+
+
+class DocumentSeller(models.Model):
     role = models.CharField(blank=True)
     name = models.CharField(blank=True)
     inn = models.CharField(blank=True)
     kpp = models.CharField(blank=True)
-    type1 = models.CharField(blank=True)
-    type2 = models.CharField(blank=True)
+
+    def __str__(self):
+        return self.name
+
+
+class DocumentBuyer(models.Model):
+    role = models.CharField(blank=True)
+    name = models.CharField(blank=True)
+    inn = models.CharField(blank=True)
+    kpp = models.CharField(blank=True)
 
     def __str__(self):
         return self.name
