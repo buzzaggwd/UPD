@@ -257,7 +257,7 @@ class ProductForm(forms.ModelForm):
     class Meta:
         model = models.Product
         fields = "__all__"
-        exclude = ["section_id"]
+        # exclude = ["section_id"]
         labels = {
             "section_id": "Раздел:",
             "name": "Наименование:",
@@ -275,9 +275,9 @@ class ProductForm(forms.ModelForm):
             "price": "Цена:",
         }
 
-        widgets = {
-            'section': forms.HiddenInput()
-        }
+        # widgets = {
+        #     'section': forms.HiddenInput()
+        # }
 
 
 class InfoBlockForm(forms.ModelForm):
