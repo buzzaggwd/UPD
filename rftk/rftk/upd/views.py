@@ -121,12 +121,12 @@ def create_consignee(request):
     return render(request, 'create_consignee.html', {'buyer_form': buyer_form, 'consignee_form': consignee_form})
 
 
-# def add_section_modal(request):
-#     if request.method == 'POST':
-#         form = SectionForm(request.POST)
-#         if form.is_valid():
-#             section = form.save()
-#             return JsonResponse({'id': section.id, 'name': section.name})
-#     else:
-#         form = SectionForm()
-#     return render(request, 'modal_section.html', {'form': form})
+def add_section_modal(request):
+    if request.method == 'POST':
+        form = SectionForm(request.POST)
+        if form.is_valid():
+            section = form.save()
+            return JsonResponse({'id': section.id, 'name': section.name})
+    else:
+        form = SectionForm()
+    return render(request, 'modal_section.html', {'form': form})
