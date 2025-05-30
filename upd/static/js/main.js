@@ -55,3 +55,38 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 
+
+  document.getElementById("show-section-form").onclick = function () {
+    document.getElementById("new-section-form").style.display = "block";
+  };
+
+  // Обработка формы
+  document.getElementById("section-form").onsubmit = async function (e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+
+    const response = await fetch("{% url 'create_section_ajax' %}", {
+      method: "POST",
+      body: formData,
+      headers: {
+        'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+      }
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+
+      // Добавляем новый раздел в select
+      const select = document.getElementById("id_section");
+      const option = new Option(data.name, data.id);
+      option.selected = true;
+      select.add(option);
+
+      // Скрыть и сбросить форму
+      this.reset();
+      document.getElementById("new-section-form").style.display = "none";
+    } else {
+      alert("Ошибка при добавлении раздела");
+    }
+  };
