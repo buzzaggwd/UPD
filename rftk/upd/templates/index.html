@@ -7,7 +7,7 @@
     <title>Универсальный передаточный документ</title>
     <link rel="stylesheet" href="/static/css/styles.css" />
     <script src="/static/js/main.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"> -->
   </head>
 
   <body>
@@ -170,31 +170,17 @@
 
       <!-- Блок 10: Продукт/товар -->
       <div class="section">
-          <!-- Модальное окно -->
-          <div class="modal fade" id="sectionModal" tabindex="-1" aria-labelledby="sectionModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-              <form id="section-form" method="post">
-                {% csrf_token %}
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h5 class="modal-title" id="sectionModalLabel">Новый раздел</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                  </div>
-                  <div class="modal-body">
-                    {{ section_form.name.label_tag }} {{ section_form.name }}
-                  </div>
-                  <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">Сохранить</button>
-                  </div>
-                </div>
-              </form>
-            </div>
-          </div>
-
           <fieldset class="sections">
             <legend>Раздел продукта/товара</legend>
-            <!-- {{ section_form.name.label_tag }} {{ section_form.name}} -->
-            <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#sectionModal">Создать раздел</button>
+            {{ product_form.section }}
+            <button type="button" id="show-section-form">+ Добавить раздел</button>
+            <div id="new-section-form" style="display:none; margin-top: 10px;">
+              <!-- <form id="section-form" method="post">
+                {% csrf_token %} -->
+                {{ section_form.name.label_tag }} {{ section_form.name }}
+                <button type="submit">Сохранить</button>
+              <!-- </form> -->
+            </div>
           </fieldset>
 
           <fieldset class="product">
@@ -202,25 +188,23 @@
             <table class="product_table">
               <thead>
                 <tr>
-                  <th>Раздел</th>
-                  <th>Код товара/работ, услуг</th>
-                  <th>Наименование</th>
-                  <th>Код вида товара</th>
-                  <th>Единица изм.</th>
-                  <th>Акциз</th>
-                  <th>Кол-во</th>
-                  <th>Цена</th>
-                  <th>Сумма</th>
-                  <th>Страна</th>
-                  <th>№ ГТД <span data-tooltip="Регистрационный номер декларации на товары или регистрационный номер партии товара, подлежащего прослеживаемости"></span></th>
-                  <th>&nbsp;</th>
+                  <th rowspan="2">Раздел</th>
+                  <th rowspan="2">Код товара/работ, услуг</th>
+                  <th rowspan="2">Наименование</th>
+                  <th rowspan="2">Код вида товара</th>
+                  <th colspan="2">Единица изм.</th>
+                  <th rowspan="2">Акциз</th>
+                  <th rowspan="2">Кол-во</th>
+                  <th rowspan="2">Цена</th>
+                  <th rowspan="2">Сумма</th>
+                  <th colspan="2">Страна</th>
+                  <th rowspan="2">№ ГТД <span data-tooltip="Регистрационный номер декларации на товары или регистрационный номер партии товара, подлежащего прослеживаемости"></span></th>
                 </tr>
                 <tr>
                   <th>код</th>
                   <th>усл. обозн.</th>
                   <th>код</th>
                   <th>кратк. наим.</th>
-                  <th>регион</th>
                 </tr>
               </thead>
               <tbody>
@@ -275,8 +259,8 @@
               <tbody>
                 <tr><td>{{ transfered_form.position.label_tag }}</td> <td>{{ transfered_form.position }}</td></tr>
                 <tr><td>{{ transfered_form.name.label_tag }}</td> <td>{{ transfered_form.name }}</td></tr>
-                <tr><td>Дата отгрузки (передачи):</td> <td>{{ transfered_form.date }}</td>
-                <td><label>{{ transfered_form.is_signed }} {{ transfered_form.is_signed.label_tag }}</label></td></tr>
+                <tr><td>Дата отгрузки (передачи):</td> <td>{{ transfered_form.date }}</td></tr>
+                <tr></tr><td><label>{{ transfered_form.is_signed }} {{ transfered_form.is_signed.label_tag }}</label></td></tr>
                 <tr><td>{{ transfered_form.other.label_tag }} <br> {{ transfered_form.other }}</td></tr>
               </tbody>
             </table>
@@ -352,16 +336,21 @@
             <br>
             {{ output_settings_form.show_signature }} {{ output_settings_form.show_signature.label }}
             <br>
-            <div class="col-auto">
-              <button
-                type="submit"
-                name="action"
-                value="save"
-              >
-                Сохранить
-              </button>
-            </div>
-            {{ output_settings_form.file_format }}
+            <table class="table_save_button_pdf">
+              <td>
+                <div class="col-auto">
+                  <button
+                    type="submit"
+                    name="action"
+                    value="save"
+                    class="save-button"
+                  >
+                    Сохранить
+                  </button>
+                </div>
+              </td>
+              <td>{{ output_settings_form.file_format }}</td>
+            </table>
             <!-- <div class="col-auto">
               <button
                 type="submit"
