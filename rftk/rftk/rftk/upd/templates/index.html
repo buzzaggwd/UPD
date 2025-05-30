@@ -7,7 +7,6 @@
     <title>Универсальный передаточный документ</title>
     <link rel="stylesheet" href="/static/css/styles.css" />
     <script src="/static/js/main.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   </head>
 
   <body>
@@ -31,14 +30,14 @@
                 {{ invoice_form.invoice_number.label_tag }} {{ invoice_form.invoice_number }}
                 &nbsp;{{ invoice_form.date.label_tag }} {{ invoice_form.date }}
               </div>
-              <!-- <div class="col-auto">
+              <div class="col-auto">
                 <button
                   type="submit"
                   name="action"
                   value="print">
                   Печать
                 </button>
-              </div> -->
+              </div>
             </div>
             <fieldset class="invoice_inner2">
               <legend>Исправления</legend>
@@ -170,36 +169,14 @@
 
       <!-- Блок 10: Продукт/товар -->
       <div class="section">
-          <!-- Модальное окно -->
-          <div class="modal fade" id="sectionModal" tabindex="-1" aria-labelledby="sectionModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-              <form id="section-form" method="post">
-                {% csrf_token %}
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h5 class="modal-title" id="sectionModalLabel">Новый раздел</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                  </div>
-                  <div class="modal-body">
-                    {{ section_form.name.label_tag }} {{ section_form.name }}
-                  </div>
-                  <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">Сохранить</button>
-                  </div>
-                </div>
-              </form>
-            </div>
-          </div>
-
           <fieldset class="sections">
             <legend>Раздел продукта/товара</legend>
-            <!-- {{ section_form.name.label_tag }} {{ section_form.name}} -->
-            <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#sectionModal">Создать раздел</button>
+            {{ section_form.name.label_tag }} {{ section_form.name}}
           </fieldset>
 
           <fieldset class="product">
             <legend>Продукт/товар</legend>
-            <table class="product_table">
+            <table>
               <thead>
                 <tr>
                   <th>Раздел</th>
@@ -211,6 +188,7 @@
                   <th>Кол-во</th>
                   <th>Цена</th>
                   <th>Сумма</th>
+                  <th>Ставка, %</th>
                   <th>Страна</th>
                   <th>№ ГТД <span data-tooltip="Регистрационный номер декларации на товары или регистрационный номер партии товара, подлежащего прослеживаемости"></span></th>
                   <th>&nbsp;</th>
@@ -237,7 +215,6 @@
                   <td>{{ product_form.full_sum }}</td>
                   <td>{{ product_form.country_code }}</td>
                   <td>{{ product_form.country_name }}</td>
-                  <td>{{ product_form.customs_declaration_num }}</td>
                 </tr>
               </tbody>
               <tfoot>
@@ -248,7 +225,7 @@
                     <span>10 строк</span>
                   </td>
                   <td><b>Сумма НДС:</b></td>
-                  <td>0.00</td>
+                  <td>{{ product_form.customs_declaration_num }}</td>
                   <td><strong>Итого</strong></td>
                   <td>0.00</td>
                 </tr>
@@ -362,7 +339,7 @@
               </button>
             </div>
             {{ output_settings_form.file_format }}
-            <!-- <div class="col-auto">
+            <div class="col-auto">
               <button
                 type="submit"
                 name="action"
@@ -370,8 +347,8 @@
               >
                 Печать
               </button>
-            </div> -->
-            <!-- <div class="col-auto">
+            </div>
+            <div class="col-auto">
               <button
                 type="submit"
                 name="action"
@@ -379,7 +356,7 @@
               >
                 Скачать
               </button>
-            </div> -->
+            </div>
           </fieldset>
 
           {% if messages %}
@@ -394,7 +371,6 @@
 
       </form>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   </body>
 
 </html>
