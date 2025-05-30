@@ -1,6 +1,8 @@
+=======
 # .gitignore
 __pycache__/
 *.py[cod]
 .env
 venv/
 *.log
+>>>>>>> d86683519332cc754c93e8e125a938d3b59117d7
